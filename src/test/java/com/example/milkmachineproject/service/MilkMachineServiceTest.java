@@ -7,6 +7,7 @@ import com.example.milkmachineproject.repository.MilkMachineRepository;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
 import org.junit.jupiter.params.ParameterizedTest;
+import org.junit.jupiter.params.provider.ArgumentsSource;
 import org.junit.jupiter.params.provider.ValueSource;
 import org.mockito.ArgumentCaptor;
 import org.mockito.Mockito;
@@ -185,4 +186,22 @@ class MilkMachineServiceTest {
         assertEquals("test", editedMilkMachine.getName());
     }
 
+
+    @Test
+    void should_return_proper_average_temperature_when_a_sensors_list_given() {
+        // given
+        Sensor sensor1 = new Sensor("upper", 4.0f, Frequency.ONCE_DAY);
+        Sensor sensor2 = new Sensor("bottom", 6.0f, Frequency.ONCE_DAY);
+        List<Sensor> sensorList = List.of(sensor1, sensor2);
+        MilkMachine milkMachine = new MilkMachine(1L, "test", sensorList);
+        Mockito.when(milkMachineRepository.findById(milkMachine.getId()))
+                .thenReturn(Optional.of(milkMachine));
+        float expectedResult = 5.0f;
+        // when
+        float result = milkMachineService.getAverageTemperatureOfMachineGivenById(milkMachine.getId());
+        // then
+        Mockito.verify(milkMachineRepository).findById(milkMachine.getId());
+        assertEquals(expectedResult, result);
+
+    }
 }

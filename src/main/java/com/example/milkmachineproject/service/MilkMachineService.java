@@ -8,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.List;
 import java.util.NoSuchElementException;
+import java.util.Optional;
 
 @Service
 public class MilkMachineService {
@@ -65,15 +66,13 @@ public class MilkMachineService {
     }
 
     public float getAverageTemperatureOfMachineGivenById(Long id) {
-         MilkMachine chosenMilkMachine = getMilkMachineFromList(id);
-         List<Sensor> sensorList = chosenMilkMachine.getSensors();
+        MilkMachine milkMachineById = milkMachineRepository.findById(id).get();
+        List<Sensor> sensorList = milkMachineById.getSensors();
 
          float sum = 0;
 
         for (Sensor sensor: sensorList) {
-            for (int i = 0; i < sensorList.size(); i++) {
                 sum += sensor.getTemperature();
-            }
         }
         return sum/sensorList.size();
     }
